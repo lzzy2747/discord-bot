@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 class Main(commands.AutoShardedBot):
     def __init__(self):
-        super().__init__(command_prefix=None, help_commands=None, intents=Intents.all())
+        super().__init__(help_commands=None, intents=Intents.all())
         basicConfig(level=INFO)
         load_dotenv(dotenv_path="./.env")
 

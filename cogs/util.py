@@ -3,7 +3,11 @@ from discord.ext import commands
 from simpcalc.errors import BadArgument, Overflow
 from simpcalc.simpcalc import Calculate
 import aiohttp
-
+from bs4 import BeautifulSoup
+from lxml import html
+import requests
+from config import serviceKey
+from datetime import datetime
 
 class Util(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -39,6 +43,23 @@ class Util(commands.Cog):
                     temp = data['DATAs']['DATA']["HANGANG"]["노량진"]["TEMP"]
 
                     await ctx.respond(f'{temp}°C')
+
+    @commands.slash_command(name='출몰시간', description="출몰 시간을 알려줍니다.")
+    async def sun_time(self, ctx: discord.ApplicationContext):
+        url = 'http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo'
+        params ={'serviceKey' : serviceKey, 'locdate': datetime.now().strftime('%Y%m%d'), 'location': '서울'}
+        response = requests.get(url, params=params)
+
+        content = response.text
+
+        xml_object = BeautifulSoup(content, 'lxml-xml')
+        sunrise = xml_object.find('body').find('items').find('item').find('sunrise').text
+        sunset = xml_object.find('body').find('items').find('item').find('sunset').text
+
+        embed = discord.Embed(title="☀️ 출몰 시간")
+        embed.add_field(name='일출', value=f'{int(sunrise[:2])}시 {int(sunrise[2:])}분', inline=False)
+        embed.add_field(name="일몰", value=f'{int(sunset[:2])}시 {int(sunset[2:])}분', inline=False)
+        await ctx.respond(embed=embed)
 
 def setup(bot: commands.Bot):
     bot.add_cog(Util(bot=bot))
