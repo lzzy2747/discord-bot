@@ -50,8 +50,8 @@ class Util(commands.Cog):
             required=True,
         ),  # type: ignore
     ):
-        result = Inko.en2ko(query)
-        await ctx.respond(f"{result}", ephemeral=True)
+        inko = Inko()
+        await ctx.respond(f"{inko.en2ko(query)}", ephemeral=True)
 
     @commands.slash_command(name="단축", description="링크를 단축합니다.")
     async def shorturl(
