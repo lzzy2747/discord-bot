@@ -141,12 +141,16 @@ class Util(commands.Cog):
                             define = items[i]["sense"]["definition"]
                             pos = items[i]["pos"]
                             embed.add_field(
-                                name=f"{query}", value=f"「{pos}」 {define}", inline=False
+                                name=f"{query}",
+                                value=f"「{pos}」 {define}",
+                                inline=False,
                             )
 
                         await ctx.respond(embed=embed)
                     else:
-                        await ctx.respond("검색 결과를 찾을 수 없습니다.", ephemeral=True)
+                        await ctx.respond(
+                            "검색 결과를 찾을 수 없습니다.", ephemeral=True
+                        )
 
     @commands.slash_command(name="고양이", description="고양이 사진을 가져옵니다.")
     async def cat(self, ctx: discord.ApplicationContext):
