@@ -108,5 +108,6 @@ class Moderate(commands.Cog):
 
     # TODO add timeout command
 
+
 def setup(bot: commands.Bot):
     bot.add_cog(Moderate(bot=bot))
