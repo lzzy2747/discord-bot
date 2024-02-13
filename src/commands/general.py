@@ -27,7 +27,7 @@ class General(commands.Cog):
             name="맴버",
             description="정보를 표시할 맴버",
             required=False,
-        ),  # type: ignore
+        ),
     ):
         if member is None:
             member = ctx.author
@@ -105,7 +105,7 @@ class General(commands.Cog):
             name="맴버",
             description="프사가 보여질 맴버",
             required=False,
-        ),  # type: ignore
+        ),
     ):
         if member is None:
             member = ctx.author

@@ -23,7 +23,7 @@ class Moderate(commands.Cog):
             min_value=1,
             max_value=100,
             required=True,
-        ),  # type: ignore
+        ),
     ):
         await ctx.channel.purge(limit=amount)
         await ctx.respond(f"{amount}건에 메시지를 제거했습니다.", delete_after=5.0)
@@ -36,8 +36,12 @@ class Moderate(commands.Cog):
     async def addrole(
         self,
         ctx: discord.ApplicationContext,
-        member: discord.Option(discord.Member, name="맴버", description="추가할 유저", required=True),  # type: ignore
-        role: discord.Option(discord.Role, name="역할", description="추가할 역할", required=True),  # type: ignore
+        member: discord.Option(
+            discord.Member, name="맴버", description="추가할 유저", required=True
+        ),
+        role: discord.Option(
+            discord.Role, name="역할", description="추가할 역할", required=True
+        ),
     ):
         if role.name == "@everyone" or role.name == "@here":
             return
@@ -54,8 +58,12 @@ class Moderate(commands.Cog):
     async def removerole(
         self,
         ctx: discord.ApplicationContext,
-        member: discord.Option(discord.Member, name="맴버", description="제거할 유저", required=True),  # type: ignore
-        role: discord.Option(discord.Role, name="역할", description="제거할 역할", required=True),  # type: ignore
+        member: discord.Option(
+            discord.Member, name="맴버", description="제거할 유저", required=True
+        ),
+        role: discord.Option(
+            discord.Role, name="역할", description="제거할 역할", required=True
+        ),
     ):
         if role.name == "@everyone" or role.name == "@here":
             return
@@ -73,13 +81,13 @@ class Moderate(commands.Cog):
         ctx: discord.ApplicationContext,
         member: discord.Option(
             discord.Member, name="맴버", description="밴할 유저", required=True
-        ),  # type: ignore
+        ),
         reason: discord.Option(
             discord.SlashCommandOptionType.string,
             name="이유",
             description="밴하는 이유",
             required=False,
-        ),  # type: ignore
+        ),
     ):
         await member.ban(delete_message_days=7, reason=reason)
 
@@ -94,13 +102,13 @@ class Moderate(commands.Cog):
         ctx: discord.ApplicationContext,
         member: discord.Option(
             discord.Member, name="맴버", description="킥할 유저", required=True
-        ),  # type: ignore
+        ),
         reason: discord.Option(
             discord.SlashCommandOptionType.string,
             name="이유",
             description="킥하는 이유",
             required=False,
-        ),  # type: ignore
+        ),
     ):
         await member.kick(reason=reason)
 
@@ -118,9 +126,23 @@ class Moderate(commands.Cog):
     async def add_timeout(
         self,
         ctx: discord.ApplicationContext,
-        member: discord.Option(discord.Member, name="맴버", description="타임아웃할 맴버", required=True),  # type: ignore
-        duration: discord.Option(discord.SlashCommandOptionType.integer, name="기간", description="타임아웃할 기간(일)", min_value=1, max_value=28, required=True),  # type: ignore
-        reason: discord.Option(discord.SlashCommandOptionType.string, name="이유", description="타임아웃하는 이유", required=False),  # type: ignore
+        member: discord.Option(
+            discord.Member, name="맴버", description="타임아웃할 맴버", required=True
+        ),
+        duration: discord.Option(
+            discord.SlashCommandOptionType.integer,
+            name="기간",
+            description="타임아웃할 기간(일)",
+            min_value=1,
+            max_value=28,
+            required=True,
+        ),
+        reason: discord.Option(
+            discord.SlashCommandOptionType.string,
+            name="이유",
+            description="타임아웃하는 이유",
+            required=False,
+        ),
     ):
         await member.timeout_for(duration=timedelta(days=duration), reason=reason)
 
@@ -135,7 +157,9 @@ class Moderate(commands.Cog):
     async def remove_timeout(
         self,
         ctx: discord.ApplicationContext,
-        member: discord.Option(discord.Member, name="맴버", description="타임아웃할 맴버", required=True),  # type: ignore
+        member: discord.Option(
+            discord.Member, name="맴버", description="타임아웃할 맴버", required=True
+        ),
     ):
         await member.timeout_for(duration=timedelta(days=0))
         await ctx.respond(f"{member.name}님의 타임아웃을 해제했습니다.", ephemeral=True)
@@ -145,7 +169,18 @@ class Moderate(commands.Cog):
     )
     @commands.has_permissions(manage_channels=True)
     @commands.guild_only()
-    async def slowmode(self, ctx: discord.ApplicationContext, duration: discord.Option(discord.SlashCommandOptionType.integer, min_value=0, max_value=21600, name="기간", description="슬로우모드 기간(초)", required=True)):  # type: ignore
+    async def slowmode(
+        self,
+        ctx: discord.ApplicationContext,
+        duration: discord.Option(
+            discord.SlashCommandOptionType.integer,
+            min_value=0,
+            max_value=21600,
+            name="기간",
+            description="슬로우모드 기간(초)",
+            required=True,
+        ),
+    ):
         await ctx.channel.edit(slowmode_delay=timedelta(seconds=duration).seconds)
         await ctx.respond(f"{ctx.channel.name}의 슬로우모드를 적용했습니다.")
 

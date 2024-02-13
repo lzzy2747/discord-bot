@@ -10,7 +10,7 @@ from simpcalc.simpcalc import Calculate
 
 from function.disaster import disaster_content, disaster_date
 from function.https import get_async
-from function.naver import shorten_url
+from function.naver import CHOICE_LANG, LANG_CODE, shorten_url, translate
 from function.sun import sunrise, sunset
 
 load_dotenv(dotenv_path="../.env")
@@ -29,7 +29,7 @@ class Util(commands.Cog):
             name="수식",
             description="계산할 수식",
             required=True,
-        ),  # type: ignore
+        ),
     ):
         try:
             result = await Calculate().calculate(expr=expression)
@@ -50,7 +50,7 @@ class Util(commands.Cog):
             name="문자",
             description="변환할 문자",
             required=True,
-        ),  # type: ignore
+        ),
     ):
         inko = Inko()
         await ctx.respond(f"{inko.en2ko(query)}", ephemeral=True)
@@ -63,7 +63,7 @@ class Util(commands.Cog):
             discord.SlashCommandOptionType.string,
             name="링크",
             description="단축할 링크",
-        ),  # type: ignore
+        ),
     ):
         url = await shorten_url(url=url)
 
@@ -106,7 +106,7 @@ class Util(commands.Cog):
             name="검색어",
             description="검색할 단어",
             required=True,
-        ),  # type: ignore
+        ),
     ):
         URL: str = (
             f"https://stdict.korean.go.kr/api/search.do?certkey_no=6330&key={getenv('DICTIONARY_API_KEY')}&type_search=search&req_type=json&q={query}"
@@ -161,6 +161,27 @@ class Util(commands.Cog):
             inline=False,
         )
         await ctx.respond(embed=embed)
+
+    @commands.slash_command(name="번역", description="언어를 번역해줍니다.")
+    async def trans(
+        self,
+        ctx: discord.ApplicationContext,
+        target: discord.Option(
+            discord.SlashCommandOptionType.string,
+            name="대상언어",
+            description="번역할 대상이 될 언어",
+            choices=CHOICE_LANG,
+            required=True,
+        ),
+        text: discord.Option(
+            discord.SlashCommandOptionType.string,
+            name="내용",
+            description="번역될 내용",
+            required=True,
+        ),
+    ):
+        data = await translate(query=text, target=LANG_CODE[target], text=text)
+        await ctx.respond(f"{data}", ephemeral=False)
 
 
 def setup(bot: commands.Bot):
