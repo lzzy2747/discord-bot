@@ -9,8 +9,8 @@ from discord.ui import Button, View
 from simpcalc.errors import BadArgument, Overflow
 from simpcalc.simpcalc import Calculate
 
-from config.secret import (dictionary_key, serviceKey, shorten_url_key,
-                           shorten_url_pw)
+from config.secret import (DICTIONARY_API_KEY, SERVICE_URL, SHORT_URL_KEY,
+                           SHORT_URL_SECRET)
 
 
 class Util(commands.Cog):
@@ -49,8 +49,8 @@ class Util(commands.Cog):
         ),  # type: ignore
     ):
         headers: dict = {
-            "X-Naver-Client-Id": shorten_url_key,
-            "X-Naver-Client-Secret": shorten_url_pw,
+            "X-Naver-Client-Id": SHORT_URL_KEY,
+            "X-Naver-Client-Secret": SHORT_URL_SECRET,
         }
         params: dict = {"url": url}
 
@@ -81,7 +81,7 @@ class Util(commands.Cog):
     )
     async def disaster(self, ctx: discord.ApplicationContext):
         params = {
-            "serviceKey": serviceKey,
+            "serviceKey": SERVICE_URL,
             "pageNo": "1",
             "numOfRows": "1",
             "type": "json",
@@ -127,7 +127,7 @@ class Util(commands.Cog):
     ):
         async with aiohttp.ClientSession() as session:
             async with session.get(
-                f"https://stdict.korean.go.kr/api/search.do?certkey_no=6330&key={dictionary_key}&type_search=search&req_type=json&q={query}"
+                f"https://stdict.korean.go.kr/api/search.do?certkey_no=6330&key={DICTIONARY_API_KEY}&type_search=search&req_type=json&q={query}"
             ) as response:
                 if response.status == 200:
                     data = await response.json(content_type=None)
