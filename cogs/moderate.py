@@ -12,6 +12,7 @@ class Moderate(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
     async def clear(
+        self,
         ctx: discord.ApplicationContext,
         amount: discord.Option(
             discord.SlashCommandOptionType.integer,
