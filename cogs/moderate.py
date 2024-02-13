@@ -106,6 +106,7 @@ class Moderate(commands.Cog):
             f"{member.name}님을 {ctx.guild.name}에서 킥했습니다.", ephemeral=True
         )
 
+    # TODO add timeout command
 
 def setup(bot: commands.Bot):
     bot.add_cog(Moderate(bot=bot))
