@@ -5,7 +5,6 @@ import discord
 import requests
 from bs4 import BeautifulSoup
 from discord.ext import commands
-from lxml import html
 from simpcalc.errors import BadArgument, Overflow
 from simpcalc.simpcalc import Calculate
 
