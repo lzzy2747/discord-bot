@@ -9,7 +9,7 @@ class Moderate(commands.Cog):
     @commands.slash_command(
         name="청소", description="입력된 개수만큼 메시지를 제거합니다."
     )
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissionss(manage_messages=True)
     @commands.guild_only()
     async def clear(
         self,
@@ -29,7 +29,7 @@ class Moderate(commands.Cog):
     roles = discord.SlashCommandGroup(name="역할", description="역할을 관리합니다.")
 
     @roles.command(name="추가", description="역할를 추가합니다.")
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissionss(manage_roles=True)
     @commands.guild_only()
     async def addrole(
         self,
@@ -47,7 +47,7 @@ class Moderate(commands.Cog):
         )
 
     @roles.command(name="제거", description="역할를 제거합니다.")
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissionss(manage_roles=True)
     @commands.guild_only()
     async def removerole(
         self,
@@ -65,7 +65,7 @@ class Moderate(commands.Cog):
         )
 
     @commands.slash_command(name="밴", description="유저를 서버에서 밴합니다.")
-    @commands.has_permission(administration=True)
+    @commands.has_permissionss(administration=True)
     async def ban(
         self,
         ctx: discord.ApplicationContext,
@@ -86,7 +86,7 @@ class Moderate(commands.Cog):
         )
 
     @commands.slash_command(name="킥", description="유저를 서버에서 킥합니다.")
-    @commands.has_permissions(administration=True)
+    @commands.has_permissionss(administration=True)
     async def kick(
         self,
         ctx: discord.ApplicationContext,
