@@ -70,12 +70,12 @@ class Moderate(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         member: discord.Option(
-            discord.Member, name="맴버", description="킥할 유저", required=True
+            discord.Member, name="맴버", description="밴할 유저", required=True
         ),  # type: ignore
         reason: discord.Option(
             discord.SlashCommandOptionType.string,
             name="이유",
-            description="킥하는 이유",
+            description="밴하는 이유",
             required=False,
         ),  # type: ignore
     ):
