@@ -140,6 +140,8 @@ class Moderate(commands.Cog):
         await member.timeout_for(duration=timedelta(days=0))
         await ctx.respond(f"{member.name}님의 타임아웃을 해제했습니다.", ephemeral=True)
 
+    # TODO add slowmode command
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(Moderate(bot=bot))
