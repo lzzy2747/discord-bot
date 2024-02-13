@@ -4,3 +4,4 @@ __pycache__/
 .env
 config/secret.py
 deploy.bat
+run.bat
