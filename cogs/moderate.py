@@ -65,7 +65,7 @@ class Moderate(commands.Cog):
         )
 
     @commands.slash_command(name="밴", description="유저를 서버에서 밴합니다.")
-    @commands.has_permissions(administration=True)
+    @commands.has_permissions(ban_members=True)
     async def ban(
         self,
         ctx: discord.ApplicationContext,
@@ -86,7 +86,7 @@ class Moderate(commands.Cog):
         )
 
     @commands.slash_command(name="킥", description="유저를 서버에서 킥합니다.")
-    @commands.has_permissions(administration=True)
+    @commands.has_permissions(kick_members=True)
     async def kick(
         self,
         ctx: discord.ApplicationContext,
