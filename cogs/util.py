@@ -130,15 +130,20 @@ class Util(commands.Cog):
                 f"https://stdict.korean.go.kr/api/search.do?certkey_no=6330&key={dictionary_key}&type_search=search&req_type=json&q={query}"
             ) as response:
                 if response.status == 200:
-                    data = await response.json()
+                    data = await response.json(content_type=None)
 
                     items = data["channel"]["item"]
+
+                    if items is None:
+                        return await ctx.respond(
+                            "해당 단어를 찾을 수 없습니다.", ephemeral=True
+                        )
 
                     embed = discord.Embed(description=f"{query}의 대한 검색어")
 
                     for i in range(0, len(items)):
-                        define = data[i]["definition"]
-                        pos = data[i]["pos"]
+                        define = items[i]["sense"]["definition"]
+                        pos = items[i]["pos"]
                         embed.add_field(
                             name=f"{query}", value=f"「{pos}」 {define}", inline=False
                         )
