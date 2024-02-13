@@ -10,8 +10,12 @@ from inko import Inko
 from simpcalc.errors import BadArgument, Overflow
 from simpcalc.simpcalc import Calculate
 
-from config.secret import (DICTIONARY_API_KEY, SERVICE_URL, SHORT_URL_KEY,
-                           SHORT_URL_SECRET)
+from config.secret import (
+    DICTIONARY_API_KEY,
+    SERVICE_URL,
+    SHORT_URL_KEY,
+    SHORT_URL_SECRET,
+)
 
 
 class Util(commands.Cog):

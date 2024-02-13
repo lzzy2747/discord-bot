@@ -140,7 +140,10 @@ class Moderate(commands.Cog):
         await member.timeout_for(duration=timedelta(days=0))
         await ctx.respond(f"{member.name}님의 타임아웃을 해제했습니다.", ephemeral=True)
 
-    # TODO add slowmode command
+    @commands.slash_command(name="슬로우모드")
+    async def slowmode(self, ctx: discord.ApplicationContext, duration: discord.Option(discord.SlashCommandOptionType.integer, min_value=0, max_value=21600, name="기간", description="슬로우모드 기간(초)", required=True)):  # type: ignore
+        await ctx.channel.edit(slowmode_delay=timedelta(seconds=duration))
+        await ctx.respond(f"{ctx.channel.name}의 슬로우모드를 적용했습니다.")
 
 
 def setup(bot: commands.Bot):
