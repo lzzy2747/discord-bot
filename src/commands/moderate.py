@@ -8,6 +8,14 @@ class Moderate(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
+    async def cog_command_error(
+        self, _: discord.ApplicationContext, error: commands.CommandError
+    ):
+        if isinstance(error, commands.MissingPermissions) or isinstance(
+            error, commands.BotMissingPermissions
+        ):
+            return
+
     @commands.slash_command(
         name="청소", description="입력된 개수만큼 메시지를 제거합니다."
     )
@@ -43,9 +51,6 @@ class Moderate(commands.Cog):
             discord.Role, name="역할", description="추가할 역할", required=True
         ),
     ):
-        if role.name == "@everyone" or role.name == "@here":
-            return
-
         await member.add_roles(role)
 
         await ctx.respond(
@@ -65,9 +70,6 @@ class Moderate(commands.Cog):
             discord.Role, name="역할", description="제거할 역할", required=True
         ),
     ):
-        if role.name == "@everyone" or role.name == "@here":
-            return
-
         await member.remove_roles(role)
 
         await ctx.respond(
