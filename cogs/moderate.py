@@ -64,6 +64,48 @@ class Moderate(commands.Cog):
             f"{member.name}님에게 {role.name}를 제거했습니다.", ephemeral=False
         )
 
+    @commands.slash_command(name="밴", description="유저를 서버에서 밴합니다.")
+    @command.has_permission(administration=True)
+    async def ban(
+        self,
+        ctx: discord.ApplicationContext,
+        member: discord.Option(
+            discord.Member, name="맴버", description="킥할 유저", required=True
+        ),  # type: ignore
+        reason: discord.Option(
+            discord.SlashCommandOptionType.string,
+            name="이유",
+            description="킥하는 이유",
+            required=False,
+        ),  # type: ignore
+    ):
+        await member.ban(delete_message_days=7, reason=reason)
+
+        await ctx.respond(
+            f"{member.name}님을 {ctx.guild.name}에서 밴했습니다.", ephemeral=True
+        )
+
+    @commands.slash_command(name="킥", description="유저를 서버에서 킥합니다.")
+    @commands.has_permissions(administration=True)
+    async def kick(
+        self,
+        ctx: discord.ApplicationContext,
+        member: discord.Option(
+            discord.Member, name="맴버", description="킥할 유저", required=True
+        ),  # type: ignore
+        reason: discord.Option(
+            discord.SlashCommandOptionType.string,
+            name="이유",
+            description="킥하는 이유",
+            required=False,
+        ),  # type: ignore
+    ):
+        await member.kick(reason=reason)
+
+        await ctx.respond(
+            f"{member.name}님을 {ctx.guild.name}에서 킥했습니다.", ephemeral=True
+        )
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(Moderate(bot=bot))
