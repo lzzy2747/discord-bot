@@ -5,10 +5,11 @@ import discord
 import requests
 from bs4 import BeautifulSoup
 from discord.ext import commands
+from discord.ui import Button, View
 from simpcalc.errors import BadArgument, Overflow
 from simpcalc.simpcalc import Calculate
 
-from config import serviceKey
+from config import serviceKey, shorten_url_key, shorten_url_pw
 
 
 class Util(commands.Cog):
@@ -35,6 +36,42 @@ class Util(commands.Cog):
             await ctx.respond(
                 "잘못된 수식 입력입니다. 다시 입력해주세요.", ephemeral=True
             )
+
+    @commands.slash_command(name="단축", description="링크를 단축합니다.")
+    async def shorturl(
+        self,
+        ctx: discord.ApplicationContext,
+        url: discord.Option(
+            discord.SlashCommandOptionType.string,
+            name="링크",
+            description="단축할 링크",
+        ),
+    ):
+        headers: dict = {
+            "X-Naver-Client-Id": shorten_url_key,
+            "X-Naver-Client-Secret": shorten_url_pw,
+        }
+        params: dict = {"url": url}
+
+        async with aiohttp.ClientSession(headers=headers) as session:
+            async with session.post(
+                "https://openapi.naver.com/v1/util/shorturl.json", data=params
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+
+                    url = data["result"]["url"]
+
+                    button = Button(
+                        label="바로가기",
+                        style=discord.ButtonStyle.link,
+                        url=url,
+                        emoji="🔗",
+                    )
+                    view = View()
+                    view.add_item(button)
+
+                    await ctx.response.send_message("단축이 되었습니다.", view=view, ephemeral=True)
 
     @commands.slash_command(
         name="재난문자", description="최근 발송된 재난문자를 불러옵니다."
