@@ -36,6 +36,30 @@ class Util(commands.Cog):
                 "잘못된 수식 입력입니다. 다시 입력해주세요.", ephemeral=True
             )
 
+    @commands.slash_command(
+        name="재난문자", description="최근 발송된 재난문자를 불러옵니다."
+    )
+    async def disaster(self, ctx: discord.ApplicationContext):
+        params = {
+            "serviceKey": serviceKey,
+            "pageNo": "1",
+            "numOfRows": "1",
+            "type": "json",
+        }
+        response = requests.get(
+            "http://apis.data.go.kr/1741000/DisasterMsg3/getDisasterMsg1List",
+            params=params,
+        )
+
+        data = response.json()
+
+        time = data["DisasterMsg"][1]["row"][0]["create_date"]
+        msg = data["DisasterMsg"][1]["row"][0]["msg"]
+
+        embed = discord.Embed(description=msg)
+        embed.set_footer(text=time)
+        await ctx.respond(embed=embed)
+
     @commands.slash_command(name="강아지", description="강아지 사진을 가져옵니다.")
     async def dog(self, ctx: discord.ApplicationContext):
         async with aiohttp.ClientSession() as session:
