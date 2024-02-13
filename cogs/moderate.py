@@ -107,7 +107,7 @@ class Moderate(commands.Cog):
         )
 
     @commands.slash_command(name="타임아웃", description="유저에게 타임아웃을 겁니다.")
-    @commands.has_permissions(timeout_members=True)
+    @commands.has_permissions(administrator=True)
     @commands.guild_only()
     async def timeout(
         self,
