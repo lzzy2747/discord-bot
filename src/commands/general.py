@@ -18,7 +18,6 @@ class General(commands.Cog):
         )
 
     @commands.slash_command(name="유저정보", description="유저의 정보를 불러옵니다.")
-    @commands.guild_only()
     async def userinfo(
         self,
         ctx: discord.ApplicationContext,
@@ -96,7 +95,6 @@ class General(commands.Cog):
         await ctx.respond(embed=embed)
 
     @commands.slash_command(name="프사", description="유저의 프사를 보여줍니다.")
-    @commands.guild_only()
     async def avatar(
         self,
         ctx: discord.ApplicationContext,
