@@ -9,7 +9,7 @@ from discord.ui import Button, View
 from simpcalc.errors import BadArgument, Overflow
 from simpcalc.simpcalc import Calculate
 
-from config import serviceKey, shorten_url_key, shorten_url_pw
+from etc.config import serviceKey, shorten_url_key, shorten_url_pw
 
 
 class Util(commands.Cog):
