@@ -132,23 +132,21 @@ class Util(commands.Cog):
                 if response.status == 200:
                     data = await response.json(content_type=None)
 
-                    items = data["channel"]["item"]
+                    if data:
+                        items = data["channel"]["item"]
 
-                    if items is None:
-                        return await ctx.respond(
-                            "해당 단어를 찾을 수 없습니다.", ephemeral=True
-                        )
+                        embed = discord.Embed(description=f"{query}의 대한 검색어")
 
-                    embed = discord.Embed(description=f"{query}의 대한 검색어")
+                        for i in range(0, len(items)):
+                            define = items[i]["sense"]["definition"]
+                            pos = items[i]["pos"]
+                            embed.add_field(
+                                name=f"{query}", value=f"「{pos}」 {define}", inline=False
+                            )
 
-                    for i in range(0, len(items)):
-                        define = items[i]["sense"]["definition"]
-                        pos = items[i]["pos"]
-                        embed.add_field(
-                            name=f"{query}", value=f"「{pos}」 {define}", inline=False
-                        )
-
-                    await ctx.respond(embed=embed)
+                        await ctx.respond(embed=embed)
+                    else:
+                        await ctx.respond("검색 결과를 찾을 수 없습니다.", ephemeral=True)
 
     @commands.slash_command(name="고양이", description="고양이 사진을 가져옵니다.")
     async def cat(self, ctx: discord.ApplicationContext):
