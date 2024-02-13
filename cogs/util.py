@@ -56,9 +56,9 @@ class Util(commands.Cog):
         sunrise = xml_object.find('body').find('items').find('item').find('sunrise').text
         sunset = xml_object.find('body').find('items').find('item').find('sunset').text
 
-        embed = discord.Embed(title="☀️ 출몰 시간")
-        embed.add_field(name='일출', value=f'{int(sunrise[:2])}시 {int(sunrise[2:])}분', inline=False)
-        embed.add_field(name="일몰", value=f'{int(sunset[:2])}시 {int(sunset[2:])}분', inline=False)
+        embed = discord.Embed()
+        embed.add_field(name='☀️ 일출', value=f'{int(sunrise[:2])}시 {int(sunrise[2:])}분', inline=False)
+        embed.add_field(name="🌙 일몰", value=f'{int(sunset[:2])}시 {int(sunset[2:])}분', inline=False)
         await ctx.respond(embed=embed)
 
 def setup(bot: commands.Bot):
