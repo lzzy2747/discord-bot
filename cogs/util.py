@@ -176,7 +176,7 @@ class Util(commands.Cog):
     async def sun_time(self, ctx: discord.ApplicationContext):
         url = "http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo"
         params = {
-            "serviceKey": serviceKey,
+            "serviceKey": SERVICE_URL,
             "locdate": datetime.now().strftime("%Y%m%d"),
             "location": "서울",
         }
