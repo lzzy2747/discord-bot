@@ -36,6 +36,34 @@ class Util(commands.Cog):
                 "잘못된 수식 입력입니다. 다시 입력해주세요.", ephemeral=True
             )
 
+    @commands.slash_command(name="강아지", description="강아지 사진을 가져옵니다.")
+    async def dog(self, ctx: discord.ApplicationContext):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://dog.ceo/api/breeds/image/random"
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    img = data["message"]
+
+                    embed = discord.Embed()
+                    embed.set_image(url=img)
+                    await ctx.respond(embed=embed)
+
+    @commands.slash_command(name="고양이", description="고양이 사진을 가져옵니다.")
+    async def cat(self, ctx: discord.ApplicationContext):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://api.thecatapi.com/v1/images/search?limit=1"
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    img = data[0]["url"]
+
+                    embed = discord.Embed()
+                    embed.set_image(url=img)
+                    await ctx.respond(embed=embed)
+
     @commands.slash_command(name="한강", description="한강 수온을 알려줍니다.")
     async def river(self, ctx: discord.ApplicationContext):
         async with aiohttp.ClientSession() as session:
