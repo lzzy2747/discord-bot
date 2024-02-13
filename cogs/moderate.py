@@ -29,7 +29,7 @@ class Moderate(commands.Cog):
     roles = discord.SlashCommandGroup(name="역할", description="역할을 관리합니다.")
 
     @roles.command(name="추가", description="역할를 추가합니다.")
-    @commands.has_permissions(manage_members=True)
+    @commands.has_permissions(manage_roles=True)
     @commands.guild_only()
     async def addrole(
         self,
@@ -47,7 +47,7 @@ class Moderate(commands.Cog):
         )
 
     @roles.command(name="제거", description="역할를 제거합니다.")
-    @commands.has_permissions(manage_members=True)
+    @commands.has_permissions(manage_roles=True)
     @commands.guild_only()
     async def removerole(
         self,
