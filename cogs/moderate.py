@@ -65,7 +65,7 @@ class Moderate(commands.Cog):
         )
 
     @commands.slash_command(name="밴", description="유저를 서버에서 밴합니다.")
-    @command.has_permission(administration=True)
+    @commands.has_permission(administration=True)
     async def ban(
         self,
         ctx: discord.ApplicationContext,
