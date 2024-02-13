@@ -106,7 +106,16 @@ class Moderate(commands.Cog):
             f"{member.name}님을 {ctx.guild.name}에서 킥했습니다.", ephemeral=True
         )
 
-    # TODO add timeout command
+    @commands.slash_command(name="타임아웃", description="유저에게 타임아웃을 겁니다.")
+    @commands.has_permissions(timeout_members=True)
+    @commands.guild_only()
+    async def timeout(
+        self,
+        ctx: discord.ApplicationContext,
+        member: discord.Option(discord.Member, name="맴버", description="타임아웃할 맴버", required=True),  # type: ignore
+        duration: discord.OptionChoice(name="기간", value=["1분", "5분", "10분", "30분", "1시간", "1일", "7일", "30일"]),  # type: ignore
+    ):
+        pass
 
 
 def setup(bot: commands.Bot):
