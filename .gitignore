@@ -1,7 +1,6 @@
-venv/*
-.vscode/
+venv/
 __pycache__/
+
 .env
-config/secret.py
-deploy.bat
-run.bat
+*.bat
+.vscode
