@@ -14,7 +14,7 @@ URL: str = (
 )
 
 locdate = datetime.now().strftime(TIME_FORMAT)
-params: dict = {
+PARAMS: dict = {
     "serviceKey": getenv("SERVICE_URL"),
     "locdate": locdate,
     "location": LOCATION,
@@ -22,14 +22,14 @@ params: dict = {
 
 
 def sunrise():
-    content = get(url=URL, params=params).text
+    content = get(url=URL, params=PARAMS).text
     soup = BeautifulSoup(content, "lxml-xml")
 
     return soup.find("body").find("items").find("item").find("sunrise").text
 
 
 def sunset():
-    content = get(url=URL, params=params).text
+    content = get(url=URL, params=PARAMS).text
     soup = BeautifulSoup(content, "lxml-xml")
 
     return soup.find("body").find("items").find("item").find("sunset").text
