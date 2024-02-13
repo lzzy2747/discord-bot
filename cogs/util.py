@@ -71,7 +71,9 @@ class Util(commands.Cog):
                     view = View()
                     view.add_item(button)
 
-                    await ctx.response.send_message("단축이 되었습니다.", view=view, ephemeral=True)
+                    await ctx.response.send_message(
+                        "단축이 되었습니다.", view=view, ephemeral=True
+                    )
 
     @commands.slash_command(
         name="재난문자", description="최근 발송된 재난문자를 불러옵니다."
