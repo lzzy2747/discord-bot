@@ -75,8 +75,6 @@ class Util(commands.Cog):
                         "단축이 되었습니다.", view=view, ephemeral=True
                     )
 
-    # TODO add dict command
-
     @commands.slash_command(
         name="재난문자", description="최근 발송된 재난문자를 불러옵니다."
     )
