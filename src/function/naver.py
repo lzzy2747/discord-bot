@@ -6,7 +6,7 @@ from function.https import post
 
 load_dotenv(dotenv_path="../.env")
 
-SHORTEN_API_URL: str = "https://openapi.naver.com/v1/util/shorturl.json"
+URL: list = ["https://openapi.naver.com/v1/util/shorturl.json"]
 HEADERS: dict = {
     "X-Naver-Client-Id": getenv("NAVER_ID"),
     "X-Naver-Client-Secret": getenv("NAVER_SECRET"),
@@ -16,7 +16,7 @@ HEADERS: dict = {
 async def shorten_url(url: str):
     PARAM: dict = {"url": url}
     data = await post(
-        url=SHORTEN_API_URL,
+        url=URL[0],
         data=PARAM,
         headers=HEADERS,
     )
