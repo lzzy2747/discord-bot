@@ -36,7 +36,7 @@ class Util(commands.Cog):
             async with session.get('https://api.hangang.life/') as response:
                 if response.status == 200:
                     data = await response.json()
-                    temp = data['DATA']["HANGANG"]["노량진"]["TEMP"]
+                    temp = data['DATAs']['DATA']["HANGANG"]["노량진"]["TEMP"]
 
                     await ctx.respond(f'{temp}°C')
 
