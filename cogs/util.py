@@ -45,7 +45,7 @@ class Util(commands.Cog):
             discord.SlashCommandOptionType.string,
             name="링크",
             description="단축할 링크",
-        ),
+        ),  # type: ignore
     ):
         headers: dict = {
             "X-Naver-Client-Id": shorten_url_key,
