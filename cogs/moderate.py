@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import discord
 from discord.ext import commands
+from networkx import descendants
 
 
 class Moderate(commands.Cog):
@@ -140,9 +141,13 @@ class Moderate(commands.Cog):
         await member.timeout_for(duration=timedelta(days=0))
         await ctx.respond(f"{member.name}님의 타임아웃을 해제했습니다.", ephemeral=True)
 
-    @commands.slash_command(name="슬로우모드")
+    @commands.slash_command(
+        name="슬로우모드", description="채널에 슬로우모드를 적용하거나 해제합니다."
+    )
+    @commands.has_permissions(manage_channels=True)
+    @commands.guild_only()
     async def slowmode(self, ctx: discord.ApplicationContext, duration: discord.Option(discord.SlashCommandOptionType.integer, min_value=0, max_value=21600, name="기간", description="슬로우모드 기간(초)", required=True)):  # type: ignore
-        await ctx.channel.edit(slowmode_delay=timedelta(seconds=duration))
+        await ctx.channel.edit(slowmode_delay=timedelta(seconds=duration).seconds)
         await ctx.respond(f"{ctx.channel.name}의 슬로우모드를 적용했습니다.")
 
 
