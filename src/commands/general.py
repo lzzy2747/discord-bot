@@ -1,8 +1,10 @@
-from time import mktime
+import imp
 
 import discord
 from discord.ext import commands
 from discord.ui import Button, View
+
+from function.unix import datetime_to_unix
 
 
 class General(commands.Cog):
@@ -31,8 +33,8 @@ class General(commands.Cog):
         if member is None:
             member = ctx.author
 
-        created = round(mktime(member.created_at.timetuple()))
-        joined = round(mktime(member.joined_at.timetuple()))
+        created = datetime_to_unix(date=member.created_at)
+        joined = datetime_to_unix(date=member.joined_at)
 
         status: dict = {
             discord.Status.online: "온라인",
@@ -65,7 +67,7 @@ class General(commands.Cog):
     @commands.guild_only()
     async def serverinfo(self, ctx: discord.ApplicationContext):
         server = ctx.guild
-        created = round(mktime(server.created_at.timetuple()))
+        created = datetime_to_unix(date=server.created_at)
 
         embed = discord.Embed()
         embed.set_author(name=server.name)
