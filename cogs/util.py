@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from discord.ui import Button, View
+from inko import Inko
 from simpcalc.errors import BadArgument, Overflow
 from simpcalc.simpcalc import Calculate
 
@@ -37,6 +38,20 @@ class Util(commands.Cog):
             await ctx.respond(
                 "잘못된 수식 입력입니다. 다시 입력해주세요.", ephemeral=True
             )
+
+    @commands.slash_command(name="한타", description="영타를 한타로 변환합니다.")
+    async def hanta(
+        self,
+        ctx: discord.ApplicationContext,
+        query: discord.Option(
+            discord.SlashCommandOptionType.string,
+            name="문자",
+            description="변환할 문자",
+            required=True,
+        ),  # type: ignore
+    ):
+        result = Inko.en2ko(query)
+        await ctx.respond(f"{result}", ephemeral=True)
 
     @commands.slash_command(name="단축", description="링크를 단축합니다.")
     async def shorturl(
