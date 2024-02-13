@@ -9,7 +9,8 @@ from discord.ui import Button, View
 from simpcalc.errors import BadArgument, Overflow
 from simpcalc.simpcalc import Calculate
 
-from config.secret import serviceKey, shorten_url_key, shorten_url_pw
+from config.secret import (dictionary_key, serviceKey, shorten_url_key,
+                           shorten_url_pw)
 
 
 class Util(commands.Cog):
@@ -111,6 +112,37 @@ class Util(commands.Cog):
 
                     embed = discord.Embed()
                     embed.set_image(url=img)
+                    await ctx.respond(embed=embed)
+
+    @commands.slash_command(name="사전", description="사전을 검색합니다.")
+    async def dictionary(
+        self,
+        ctx: discord.ApplicationContext,
+        query: discord.Option(
+            discord.SlashCommandOptionType.string,
+            name="검색어",
+            description="검색할 단어",
+            required=True,
+        ),  # type: ignore
+    ):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                f"https://stdict.korean.go.kr/api/search.do?certkey_no=6330&key={dictionary_key}&type_search=search&req_type=json&q={query}"
+            ) as response:
+                if response.status == 200:
+                    data = await response.json()
+
+                    items = data["channel"]["item"]
+
+                    embed = discord.Embed(description=f"{query}의 대한 검색어")
+
+                    for i in range(0, len(items)):
+                        define = data[i]["definition"]
+                        pos = data[i]["pos"]
+                        embed.add_field(
+                            name=f"{query}", value=f"「{pos}」 {define}", inline=False
+                        )
+
                     await ctx.respond(embed=embed)
 
     @commands.slash_command(name="고양이", description="고양이 사진을 가져옵니다.")
