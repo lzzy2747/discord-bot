@@ -1,6 +1,7 @@
+from datetime import timedelta
+
 import discord
 from discord.ext import commands
-from datetime import timedelta
 
 
 class Moderate(commands.Cog):
@@ -137,7 +138,6 @@ class Moderate(commands.Cog):
         member: discord.Option(discord.Member, name="맴버", description="타임아웃할 맴버", required=True),  # type: ignore
     ):
         await member.timeout_for(duration=timedelta(days=0))
-
         await ctx.respond(f"{member.name}님의 타임아웃을 해제했습니다.", ephemeral=True)
 
 
