@@ -1,4 +1,3 @@
-from logging import DEBUG, basicConfig
 from os import getenv, listdir
 
 from discord import Intents
@@ -9,7 +8,6 @@ from dotenv import load_dotenv
 class Main(commands.AutoShardedBot):
     def __init__(self):
         super().__init__(help_commands=None, intents=Intents.all())
-        basicConfig(level=DEBUG)
         load_dotenv(dotenv_path="./.env")
 
     async def on_ready(self):
