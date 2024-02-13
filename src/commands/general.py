@@ -33,8 +33,8 @@ class General(commands.Cog):
         if member is None:
             member = ctx.author
 
-        created = datetime_to_unix(date=member.created_at)
-        joined = datetime_to_unix(date=member.joined_at)
+        createdAt = datetime_to_unix(date=member.created_at)
+        joinedAt = datetime_to_unix(date=member.joined_at)
 
         status: dict = {
             discord.Status.online: "온라인",
@@ -55,10 +55,10 @@ class General(commands.Cog):
             inline=False,
         )
         embed.add_field(
-            name="생성일", value=f"<t:{created}> (<t:{created}:R>)", inline=False
+            name="생성일", value=f"<t:{createdAt}> (<t:{createdAt}:R>)", inline=False
         )
         embed.add_field(
-            name="접속일", value=f"<t:{joined}> (<t:{joined}:R>)", inline=False
+            name="접속일", value=f"<t:{joinedAt}> (<t:{joinedAt}:R>)", inline=False
         )
 
         await ctx.respond(embed=embed, ephemeral=False)
@@ -67,7 +67,7 @@ class General(commands.Cog):
     @commands.guild_only()
     async def serverinfo(self, ctx: discord.ApplicationContext):
         server = ctx.guild
-        created = datetime_to_unix(date=server.created_at)
+        createdAt = datetime_to_unix(date=server.created_at)
 
         embed = discord.Embed()
         embed.set_author(name=server.name)
@@ -79,7 +79,7 @@ class General(commands.Cog):
         )
         embed.add_field(name="ID", value=server.id, inline=False)
         embed.add_field(
-            name="생성일", value=f"<t:{created}> (<t:{created}:R>)", inline=False
+            name="생성일", value=f"<t:{createdAt}> (<t:{createdAt}:R>)", inline=False
         )
         embed.add_field(name="맴버 수", value=f"{server.member_count}명", inline=True)
         embed.add_field(
