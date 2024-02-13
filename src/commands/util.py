@@ -1,17 +1,19 @@
-from datetime import datetime
+from os import getenv
 
-import aiohttp
 import discord
-import requests
-from bs4 import BeautifulSoup
 from discord.ext import commands
 from discord.ui import Button, View
+from dotenv import load_dotenv
 from inko import Inko
 from simpcalc.errors import BadArgument, Overflow
 from simpcalc.simpcalc import Calculate
 
-from config.secret import (DICTIONARY_API_KEY, SERVICE_URL, SHORT_URL_KEY,
-                           SHORT_URL_SECRET)
+from function.disaster import disaster_content, disaster_date
+from function.https import get_async
+from function.naver import shorten_url
+from function.sun import sunrise, sunset
+
+load_dotenv(dotenv_path="../.env")
 
 
 class Util(commands.Cog):
@@ -63,71 +65,37 @@ class Util(commands.Cog):
             description="단축할 링크",
         ),  # type: ignore
     ):
-        headers: dict = {
-            "X-Naver-Client-Id": SHORT_URL_KEY,
-            "X-Naver-Client-Secret": SHORT_URL_SECRET,
-        }
-        params: dict = {"url": url}
+        url = await shorten_url(url=url)
 
-        async with aiohttp.ClientSession(headers=headers) as session:
-            async with session.post(
-                "https://openapi.naver.com/v1/util/shorturl.json", data=params
-            ) as response:
-                if response.status == 200:
-                    data = await response.json()
+        button = Button(
+            label="바로가기",
+            style=discord.ButtonStyle.link,
+            url=url,
+            emoji="🔗",
+        )
+        view = View()
+        view.add_item(button)
 
-                    url = data["result"]["url"]
-
-                    button = Button(
-                        label="바로가기",
-                        style=discord.ButtonStyle.link,
-                        url=url,
-                        emoji="🔗",
-                    )
-                    view = View()
-                    view.add_item(button)
-
-                    await ctx.response.send_message(
-                        "단축이 되었습니다.", view=view, ephemeral=True
-                    )
+        await ctx.response.send_message("단축이 되었습니다.", view=view, ephemeral=True)
 
     @commands.slash_command(
         name="재난문자", description="최근 발송된 재난문자를 불러옵니다."
     )
     async def disaster(self, ctx: discord.ApplicationContext):
-        params = {
-            "serviceKey": SERVICE_URL,
-            "pageNo": "1",
-            "numOfRows": "1",
-            "type": "json",
-        }
-        response = requests.get(
-            "http://apis.data.go.kr/1741000/DisasterMsg3/getDisasterMsg1List",
-            params=params,
-        )
-
-        data = response.json()
-
-        time = data["DisasterMsg"][1]["row"][0]["create_date"]
-        msg = data["DisasterMsg"][1]["row"][0]["msg"]
-
-        embed = discord.Embed(description=msg)
-        embed.set_footer(text=time)
+        embed = discord.Embed(description=disaster_content())
+        embed.set_footer(text=disaster_date())
         await ctx.respond(embed=embed)
 
     @commands.slash_command(name="강아지", description="강아지 사진을 가져옵니다.")
     async def dog(self, ctx: discord.ApplicationContext):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                "https://dog.ceo/api/breeds/image/random"
-            ) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    img = data["message"]
+        data = await get_async(
+            url="https://dog.ceo/api/breeds/image/random", headers=None
+        )
+        img = data["message"]
 
-                    embed = discord.Embed()
-                    embed.set_image(url=img)
-                    await ctx.respond(embed=embed)
+        embed = discord.Embed()
+        embed.set_image(url=img)
+        await ctx.respond(embed=embed)
 
     @commands.slash_command(name="사전", description="사전을 검색합니다.")
     async def dictionary(
@@ -140,84 +108,56 @@ class Util(commands.Cog):
             required=True,
         ),  # type: ignore
     ):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"https://stdict.korean.go.kr/api/search.do?certkey_no=6330&key={DICTIONARY_API_KEY}&type_search=search&req_type=json&q={query}"
-            ) as response:
-                if response.status == 200:
-                    data = await response.json(content_type=None)
+        URL: str = (
+            f"https://stdict.korean.go.kr/api/search.do?certkey_no=6330&key={getenv('DICTIONARY_API_KEY')}&type_search=search&req_type=json&q={query}"
+        )
+        data = await get_async(url=URL, headers=None)
 
-                    if data:
-                        items = data["channel"]["item"]
+        if data:
+            items = data["channel"]["item"]
 
-                        embed = discord.Embed(description=f"{query}의 대한 검색어")
+            embed = discord.Embed(description=f"{query}의 대한 검색어")
+            for i in range(0, len(items)):
+                define = items[i]["sense"]["definition"]
+                pos = items[i]["pos"]
 
-                        for i in range(0, len(items)):
-                            define = items[i]["sense"]["definition"]
-                            pos = items[i]["pos"]
-                            embed.add_field(
-                                name=f"{query}",
-                                value=f"「{pos}」 {define}",
-                                inline=False,
-                            )
-
-                        await ctx.respond(embed=embed)
-                    else:
-                        await ctx.respond(
-                            "검색 결과를 찾을 수 없습니다.", ephemeral=True
-                        )
+                embed.add_field(
+                    name=f"{query}",
+                    value=f"「{pos}」 {define}",
+                    inline=False,
+                )
+            await ctx.respond(embed=embed)
+        else:
+            await ctx.respond("검색 결과를 찾을 수 없습니다.", ephemeral=True)
 
     @commands.slash_command(name="고양이", description="고양이 사진을 가져옵니다.")
     async def cat(self, ctx: discord.ApplicationContext):
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                "https://api.thecatapi.com/v1/images/search?limit=1"
-            ) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    img = data[0]["url"]
+        data = await get_async(
+            "https://api.thecatapi.com/v1/images/search?limit=1", headers=None
+        )
+        img = data[0]["url"]
 
-                    embed = discord.Embed()
-                    embed.set_image(url=img)
-                    await ctx.respond(embed=embed)
+        embed = discord.Embed()
+        embed.set_image(url=img)
+        await ctx.respond(embed=embed)
 
     @commands.slash_command(name="한강", description="한강 수온을 알려줍니다.")
     async def river(self, ctx: discord.ApplicationContext):
-        async with aiohttp.ClientSession() as session:
-            async with session.get("https://api.hangang.life/") as response:
-                if response.status == 200:
-                    data = await response.json()
-                    temp = data["DATAs"]["DATA"]["HANGANG"]["노량진"]["TEMP"]
-
-                    await ctx.respond(f"{temp}°C")
+        data = await get_async(url="https://api.hangang.life/", headers=None)
+        temp = data["DATAs"]["DATA"]["HANGANG"]["노량진"]["TEMP"]
+        await ctx.respond(f"{temp}°C")
 
     @commands.slash_command(name="출몰시간", description="출몰 시간을 알려줍니다.")
-    async def sun_time(self, ctx: discord.ApplicationContext):
-        url = "http://apis.data.go.kr/B090041/openapi/service/RiseSetInfoService/getAreaRiseSetInfo"
-        params = {
-            "serviceKey": SERVICE_URL,
-            "locdate": datetime.now().strftime("%Y%m%d"),
-            "location": "서울",
-        }
-        response = requests.get(url, params=params)
-
-        content = response.text
-
-        xml_object = BeautifulSoup(content, "lxml-xml")
-        sunrise = (
-            xml_object.find("body").find("items").find("item").find("sunrise").text
-        )
-        sunset = xml_object.find("body").find("items").find("item").find("sunset").text
-
+    async def suntime(self, ctx: discord.ApplicationContext):
         embed = discord.Embed()
         embed.add_field(
             name="☀️ 일출",
-            value=f"{int(sunrise[:2])}시 {int(sunrise[2:])}분",
+            value=f"{int(sunrise()[:2])}시 {int(sunrise()[2:])}분",
             inline=False,
         )
         embed.add_field(
             name="🌙 일몰",
-            value=f"{int(sunset[:2])}시 {int(sunset[2:])}분",
+            value=f"{int(sunset()[:2])}시 {int(sunset()[2:])}분",
             inline=False,
         )
         await ctx.respond(embed=embed)
