@@ -2,7 +2,7 @@ from os import getenv
 
 from dotenv import load_dotenv
 
-from function.https import get_request
+from util.https import get_request
 
 load_dotenv(dotenv_path="../.env")
 

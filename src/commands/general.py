@@ -1,10 +1,8 @@
-import imp
-
 import discord
 from discord.ext import commands
 from discord.ui import Button, View
 
-from function.unix import datetime_to_unix
+from util.unix import datetime_to_unix
 
 
 class General(commands.Cog):

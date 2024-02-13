@@ -9,7 +9,7 @@ from simpcalc.errors import BadArgument, Overflow
 from simpcalc.simpcalc import Calculate
 
 from function.disaster import disaster_content, disaster_date
-from function.https import get_async
+from util.https import get_async
 from function.naver import CHOICE_LANG, LANG_CODE, shorten_url, translate
 from function.sun import sunrise, sunset
 
