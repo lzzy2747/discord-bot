@@ -125,8 +125,8 @@ class Mod(commands.Cog):
     @app_commands.command(name="역할", description="유저의 역할을 관리합니다.")
     @app_commands.choices(
         decision=[
-            app_commands.Choice(name="추가", value="add"),
-            app_commands.Choice(name="제거", value="remove"),
+            app_commands.Choice(name="추가", value=1),
+            app_commands.Choice(name="제거", value=2),
         ]
     )
     @app_commands.describe(member="맴버", role="역할", decision="여부")
@@ -135,11 +135,11 @@ class Mod(commands.Cog):
     async def roles(
         self,
         interaction: discord.Interaction,
-        decision: app_commands.Choice[str],
+        decision: app_commands.Choice[int],
         member: discord.Member,
         role: discord.Role,
     ):
-        if decision.value == "add":
+        if decision.value == 1:
             await member.add_roles(role)
             await interaction.response.send_message(
                 f"{member.mention}님에게 {role.mention}을 {decision.name}했습니다.",
