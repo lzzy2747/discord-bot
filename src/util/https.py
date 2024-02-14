@@ -13,7 +13,7 @@ def get_request(url: str, params: Optional[dict]):
         return None
 
 
-async def get_async(url: str, headers: Optional[dict | None]):
+async def async_get(url: str, headers: Optional[dict | None]):
     async with ClientSession(headers=headers) as session:
         async with session.get(url=url) as response:
             if response.status == 200:
@@ -23,7 +23,7 @@ async def get_async(url: str, headers: Optional[dict | None]):
                 return None
 
 
-async def post(url: str, headers: Optional[dict | None], data: dict):
+async def async_post(url: str, headers: Optional[dict | None], data: dict):
     async with ClientSession(headers=headers) as session:
         async with session.post(url=url, data=data) as response:
             if response.status == 200:

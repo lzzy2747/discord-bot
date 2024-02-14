@@ -11,7 +11,7 @@ from simpcalc.simpcalc import Calculate
 from function.disaster import disaster_content, disaster_date
 from function.naver import CHOICE_LANG, LANG_CODE, shorten_url, translate
 from function.sun import sunrise, sunset
-from util.https import get_async
+from util.https import *
 
 load_dotenv(dotenv_path="../.env")
 
