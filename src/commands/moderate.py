@@ -16,6 +16,8 @@ class Moderate(commands.Cog):
         ):
             return
 
+        raise error
+
     @commands.slash_command(
         name="청소", description="입력된 개수만큼 메시지를 제거합니다."
     )
