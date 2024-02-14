@@ -1,8 +1,6 @@
-# Python and IDE
 venv/
 __pycache__/
-
-# Configuration
+.idea/
 .env
 deploy.bat
 run.bat
