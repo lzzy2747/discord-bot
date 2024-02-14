@@ -1,9 +1,7 @@
-from calendar import c
 from datetime import timedelta
 
 import discord
 from discord.ext import commands
-from networkx import read_shp
 
 
 class Moderate(commands.Cog):
@@ -69,7 +67,7 @@ class Moderate(commands.Cog):
                 ephemeral=False,
             )
 
-    @commands.slash_command(name="밴", description="유저를 서버에서 밴합니다.")
+    @commands.slash_command(name="밴", description="유저를 밴합니다.")
     @commands.has_permissions(ban_members=True)
     async def ban(
         self,
@@ -77,29 +75,11 @@ class Moderate(commands.Cog):
         member: discord.Option(
             discord.Member, name="맴버", description="밴할 유저", required=True
         ),
-        duration: discord.Option(
-            discord.SlashCommandOptionType.integer,
-            name="기간",
-            description="메시지 삭제 기간",
-            choices=["1일", "2일", "3일", "4일", "5일", "6일", "7일", "없음"],
-            required=True,
-        ),
     ):
-        DURATION_DICT: dict = {
-            "1일": 1,
-            "2일": 2,
-            "3일": 3,
-            "4일": 4,
-            "5일": 5,
-            "6일": 6,
-            "7일": 7,
-            "없음": None,
-        }
+        await member.ban()
+        await ctx.respond(f"{member.mention}님을 밴했습니다.")
 
-        await member.ban(delete_message_days=DURATION_DICT[duration])
-        await ctx.respond(f"{member.mention}님을 밴했습니다.", ephemeral=True)
-
-    @commands.slash_command(name="킥", description="유저를 서버에서 킥합니다.")
+    @commands.slash_command(name="킥", description="유저를 킥합니다.")
     @commands.has_permissions(kick_members=True)
     async def kick(
         self,
@@ -109,7 +89,7 @@ class Moderate(commands.Cog):
         ),
     ):
         await member.kick()
-        await ctx.respond(f"{member.mention}님을 킥했습니다.", ephemeral=True)
+        await ctx.respond(f"{member.mention}님을 킥했습니다.")
 
     @commands.slash_command(
         name="타임아웃", description="유저에게 타임아웃을 적용하거나 해제합니다."
