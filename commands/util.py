@@ -4,13 +4,14 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
+from inko import Inko
+from simpcalc.errors import *
+from simpcalc.simpcalc import Calculate
+
 from function.disaster import disaster_content, disaster_date
 from function.meme import meme
 from function.naver import shorten_url, translate
 from function.sun import sunrise, sunset
-from inko import Inko
-from simpcalc.errors import *
-from simpcalc.simpcalc import Calculate
 from utils.https import *
 
 load_dotenv(dotenv_path=".env")
@@ -44,19 +45,6 @@ class Util(commands.Cog):
         await interaction.response.send_message(
             f"{inko.en2ko(content)}", ephemeral=True
         )
-
-    @app_commands.command(name="밈", description="밈을 보내줍니다.")
-    async def meme(self, interaction: discord.Interaction):
-        data = await meme()
-
-        img = data["postLink"]
-        title = data["title"]
-
-        await interaction.response.defer()
-
-        embed = discord.Embed(title=title)
-        embed.set_image(url=img)
-        await interaction.followup.send(embed=embed)
 
     @app_commands.command(name="단축", description="링크를 단축합니다.")
     @app_commands.describe(url="단축할 링크")
