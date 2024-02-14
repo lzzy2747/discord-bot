@@ -1,7 +1,9 @@
+from calendar import c
 from datetime import timedelta
 
 import discord
 from discord.ext import commands
+from networkx import read_shp
 
 
 class Moderate(commands.Cog):
@@ -29,52 +31,43 @@ class Moderate(commands.Cog):
             name="개수",
             description="지울 개수",
             min_value=1,
-            max_value=100,
+            max_value=99,
             required=True,
         ),
     ):
         await ctx.channel.purge(limit=amount)
-        await ctx.respond(f"{amount}건에 메시지를 제거했습니다.", delete_after=5.0)
+        await ctx.respond(f"{amount}건에 메시지를 제거했습니다.", delete_after=10.0)
 
-    roles = discord.SlashCommandGroup(name="역할", description="역할을 관리합니다.")
-
-    @roles.command(name="추가", description="역할를 추가합니다.")
-    @commands.has_permissions(manage_roles=True)
-    @commands.guild_only()
-    async def addrole(
+    @commands.slash_command(name="역할", description="유저의 역할을 관리합니다.")
+    async def roles(
         self,
         ctx: discord.ApplicationContext,
+        whether: discord.Option(
+            discord.SlashCommandOptionType.string,
+            name="여부",
+            description="추가/제거 여부",
+            choices=["추가", "제거"],
+            required=True,
+        ),
         member: discord.Option(
-            discord.Member, name="맴버", description="추가할 유저", required=True
+            discord.Member, name="맴버", description="추가/제거할 맴버", required=True
         ),
         role: discord.Option(
-            discord.Role, name="역할", description="추가할 역할", required=True
+            discord.Role, name="역할", description="추가/제거할 역할", required=False
         ),
     ):
-        await member.add_roles(role)
-
-        await ctx.respond(
-            f"{member.name}님에게 {role.name}를 추가했습니다.", ephemeral=False
-        )
-
-    @roles.command(name="제거", description="역할를 제거합니다.")
-    @commands.has_permissions(manage_roles=True)
-    @commands.guild_only()
-    async def removerole(
-        self,
-        ctx: discord.ApplicationContext,
-        member: discord.Option(
-            discord.Member, name="맴버", description="제거할 유저", required=True
-        ),
-        role: discord.Option(
-            discord.Role, name="역할", description="제거할 역할", required=True
-        ),
-    ):
-        await member.remove_roles(role)
-
-        await ctx.respond(
-            f"{member.name}님에게 {role.name}를 제거했습니다.", ephemeral=False
-        )
+        if "추가" in whether:
+            await member.add_roles(role)
+            await ctx.respond(
+                f"{member.mention}님에게 {role.mention}를 {whether}했습니다.",
+                ephemeral=False,
+            )
+        else:
+            await member.remove_roles(role)
+            await ctx.respond(
+                f"{member.mention}님에게 {role.mention}를 {whether}했습니다.",
+                ephemeral=False,
+            )
 
     @commands.slash_command(name="밴", description="유저를 서버에서 밴합니다.")
     @commands.has_permissions(ban_members=True)
@@ -84,18 +77,27 @@ class Moderate(commands.Cog):
         member: discord.Option(
             discord.Member, name="맴버", description="밴할 유저", required=True
         ),
-        reason: discord.Option(
-            discord.SlashCommandOptionType.string,
-            name="이유",
-            description="밴하는 이유",
-            required=False,
+        duration: discord.Option(
+            discord.SlashCommandOptionType.integer,
+            name="기간",
+            description="메시지 삭제 기간",
+            choices=["1일", "2일", "3일", "4일", "5일", "6일", "7일", "없음"],
+            required=True,
         ),
     ):
-        await member.ban(delete_message_days=7, reason=reason)
+        DURATION_DICT: dict = {
+            "1일": 1,
+            "2일": 2,
+            "3일": 3,
+            "4일": 4,
+            "5일": 5,
+            "6일": 6,
+            "7일": 7,
+            "없음": None,
+        }
 
-        await ctx.respond(
-            f"{member.name}님을 {ctx.guild.name}에서 밴했습니다.", ephemeral=True
-        )
+        await member.ban(delete_message_days=DURATION_DICT[duration])
+        await ctx.respond(f"{member.mention}님을 밴했습니다.", ephemeral=True)
 
     @commands.slash_command(name="킥", description="유저를 서버에서 킥합니다.")
     @commands.has_permissions(kick_members=True)
@@ -105,27 +107,14 @@ class Moderate(commands.Cog):
         member: discord.Option(
             discord.Member, name="맴버", description="킥할 유저", required=True
         ),
-        reason: discord.Option(
-            discord.SlashCommandOptionType.string,
-            name="이유",
-            description="킥하는 이유",
-            required=False,
-        ),
     ):
-        await member.kick(reason=reason)
+        await member.kick()
+        await ctx.respond(f"{member.mention}님을 킥했습니다.", ephemeral=True)
 
-        await ctx.respond(
-            f"{member.name}님을 {ctx.guild.name}에서 킥했습니다.", ephemeral=True
-        )
-
-    timeout = discord.SlashCommandGroup(
-        name="타임아웃", description="유저에게 타임아웃을 겁니다."
+    @commands.slash_command(
+        name="타임아웃", description="유저에게 타임아웃을 적용하거나 해제합니다."
     )
-
-    @timeout.command(name="적용", description="타임아웃을 적용합니다.")
-    @commands.has_permissions(moderate_members=True)
-    @commands.guild_only()
-    async def add_timeout(
+    async def timeout(
         self,
         ctx: discord.ApplicationContext,
         member: discord.Option(
@@ -134,37 +123,20 @@ class Moderate(commands.Cog):
         duration: discord.Option(
             discord.SlashCommandOptionType.integer,
             name="기간",
-            description="타임아웃할 기간(일)",
-            min_value=1,
+            description="타임아웃 기간 (일)",
+            min_value=0,
             max_value=28,
             required=True,
         ),
-        reason: discord.Option(
-            discord.SlashCommandOptionType.string,
-            name="이유",
-            description="타임아웃하는 이유",
-            required=False,
-        ),
     ):
-        await member.timeout_for(duration=timedelta(days=duration), reason=reason)
+        await member.timeout_for(duration=timedelta(days=duration))
 
-        await ctx.respond(
-            f"{member.name}님에게 {duration}일동안 타임아웃을 적용했습니다.",
-            ephemeral=True,
-        )
-
-    @timeout.command(name="해제", description="타임아웃을 해제합니다.")
-    @commands.has_permissions(moderate_members=True)
-    @commands.guild_only()
-    async def remove_timeout(
-        self,
-        ctx: discord.ApplicationContext,
-        member: discord.Option(
-            discord.Member, name="맴버", description="타임아웃할 맴버", required=True
-        ),
-    ):
-        await member.timeout_for(duration=timedelta(days=0))
-        await ctx.respond(f"{member.name}님의 타임아웃을 해제했습니다.", ephemeral=True)
+        if duration == 0:
+            await ctx.respond(f"{member.mention}님의 타임아웃을 제거했습니다.")
+        else:
+            await ctx.respond(
+                f"{member.mention}님에게 {duration}일만큼 타임아웃했습니다."
+            )
 
     @commands.slash_command(
         name="슬로우모드", description="채널에 슬로우모드를 적용하거나 해제합니다."
