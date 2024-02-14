@@ -4,13 +4,13 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
+from function.disaster import disaster_content, disaster_date
+from function.meme import meme, waifu
+from function.naver import shorten_url, translate
+from function.sun import sunrise, sunset
 from inko import Inko
 from simpcalc.errors import *
 from simpcalc.simpcalc import Calculate
-
-from function.disaster import disaster_content, disaster_date
-from function.naver import shorten_url, translate
-from function.sun import sunrise, sunset
 from utils.https import *
 
 load_dotenv(dotenv_path=".env")
@@ -35,6 +35,31 @@ class Util(commands.Cog):
             await interaction.response.send_message(
                 "잘못된 수식 입력입니다. 다시 입력해주세요.", ephemeral=True
             )
+
+    @app_commands.command(name="짤", description="짤을 보내줍니다.")
+    @app_commands.choices(
+        category=[
+            app_commands.Choice(name="와이프", value="waifu"),
+            app_commands.Choice(name="네코", value="neko"),
+            app_commands.Choice(name="시노부", value="shinobu"),
+            app_commands.Choice(name="메구밍", value="megumin"),
+            app_commands.Choice(name="안기", value="hug"),
+            app_commands.Choice(name="울기", value="cry"),
+            app_commands.Choice(name="키스", value="kiss"),
+            app_commands.Choice(name="흔들기", value="wave"),
+            app_commands.Choice(name="하이파이브", value="highfive"),
+        ]
+    )
+    @app_commands.describe(category="목록")
+    @app_commands.rename(category="목록")
+    async def memes(
+        self, interaction: discord.Interaction, category: app_commands.Choice[str]
+    ):
+        data = await meme(category=category.value)
+
+        embed = discord.Embed()
+        embed.set_image(url=data)
+        await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="한타", description="영타를 한타로 변환합니다.")
     @app_commands.rename(content="문자")
