@@ -1,5 +1,6 @@
 # Python and IDE
 venv/
+.idea/
 __pycache__/
 
 # Configuration
