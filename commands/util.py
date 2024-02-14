@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from function.disaster import disaster_content, disaster_date
-from function.meme import meme, waifu
+from function.meme import meme
 from function.naver import shorten_url, translate
 from function.sun import sunrise, sunset
 from inko import Inko
