@@ -88,7 +88,7 @@ class Util(commands.Cog):
 
     @commands.slash_command(name="강아지", description="강아지 사진을 가져옵니다.")
     async def dog(self, ctx: discord.ApplicationContext):
-        data = await get_async(
+        data = await async_get(
             url="https://dog.ceo/api/breeds/image/random", headers=None
         )
         img = data["message"]
@@ -111,7 +111,7 @@ class Util(commands.Cog):
         URL: str = (
             f"https://stdict.korean.go.kr/api/search.do?certkey_no=6330&key={getenv('DICTIONARY_API_KEY')}&type_search=search&req_type=json&q={query}"
         )
-        data = await get_async(url=URL, headers=None)
+        data = await async_get(url=URL, headers=None)
 
         if data:
             items = data["channel"]["item"]
@@ -132,7 +132,7 @@ class Util(commands.Cog):
 
     @commands.slash_command(name="고양이", description="고양이 사진을 가져옵니다.")
     async def cat(self, ctx: discord.ApplicationContext):
-        data = await get_async(
+        data = await async_get(
             "https://api.thecatapi.com/v1/images/search?limit=1", headers=None
         )
         img = data[0]["url"]
@@ -143,7 +143,7 @@ class Util(commands.Cog):
 
     @commands.slash_command(name="한강", description="한강 수온을 알려줍니다.")
     async def river(self, ctx: discord.ApplicationContext):
-        data = await get_async(url="https://api.hangang.life/", headers=None)
+        data = await async_get(url="https://api.hangang.life/", headers=None)
         temp = data["DATAs"]["DATA"]["HANGANG"]["노량진"]["TEMP"]
         await ctx.respond(f"{temp}°C")
 

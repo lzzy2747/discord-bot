@@ -50,10 +50,16 @@ class Moderate(commands.Cog):
             required=True,
         ),
         member: discord.Option(
-            discord.Member, name="맴버", description="추가/제거할 맴버", required=True
+            discord.SlashCommandOptionType.user,
+            name="맴버",
+            description="추가/제거할 맴버",
+            required=True,
         ),
         role: discord.Option(
-            discord.Role, name="역할", description="추가/제거할 역할", required=False
+            discord.SlashCommandOptionType.role,
+            name="역할",
+            description="추가/제거할 역할",
+            required=False,
         ),
     ):
         if whether == "추가":
@@ -75,10 +81,13 @@ class Moderate(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         member: discord.Option(
-            discord.Member, name="맴버", description="밴할 유저", required=True
+            discord.SlashCommandOptionType.user,
+            name="맴버",
+            description="밴할 유저",
+            required=True,
         ),
     ):
-        await member.ban()
+        await member.ban(delete_message_days=7)
         await ctx.respond(f"{member.mention}님을 밴했습니다.")
 
     @commands.slash_command(name="킥", description="유저를 킥합니다.")
@@ -87,7 +96,10 @@ class Moderate(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         member: discord.Option(
-            discord.Member, name="맴버", description="킥할 유저", required=True
+            discord.SlashCommandOptionType.user,
+            name="맴버",
+            description="킥할 유저",
+            required=True,
         ),
     ):
         await member.kick()
@@ -100,7 +112,10 @@ class Moderate(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         member: discord.Option(
-            discord.Member, name="맴버", description="타임아웃할 맴버", required=True
+            discord.SlashCommandOptionType.user,
+            name="맴버",
+            description="타임아웃할 맴버",
+            required=True,
         ),
         duration: discord.Option(
             discord.SlashCommandOptionType.integer,

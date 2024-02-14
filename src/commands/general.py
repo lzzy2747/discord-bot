@@ -22,7 +22,7 @@ class General(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         member: discord.Option(
-            discord.Member,
+            discord.SlashCommandOptionType.user,
             name="맴버",
             description="정보를 표시할 맴버",
             required=False,
@@ -99,7 +99,7 @@ class General(commands.Cog):
         self,
         ctx: discord.ApplicationContext,
         member: discord.Option(
-            discord.Member,
+            discord.SlashCommandOptionType.user,
             name="맴버",
             description="프사가 보여질 맴버",
             required=False,
