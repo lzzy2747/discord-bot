@@ -73,7 +73,6 @@ class General(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="서버정보", description="서버 정보를 불러옵니다.")
-    @app_commands.guild_only()
     async def serverinfo(self, interaction: discord.Interaction):
         server = interaction.guild
 
