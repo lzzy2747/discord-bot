@@ -45,7 +45,7 @@ class Moderate(commands.Cog):
         whether: discord.Option(
             discord.SlashCommandOptionType.string,
             name="여부",
-            description="추가/제거 여부",
+            description="추가 혹은 제거 여부",
             choices=["추가", "제거"],
             required=True,
         ),
@@ -56,7 +56,7 @@ class Moderate(commands.Cog):
             discord.Role, name="역할", description="추가/제거할 역할", required=False
         ),
     ):
-        if "추가" in whether:
+        if whether == "추가":
             await member.add_roles(role)
             await ctx.respond(
                 f"{member.mention}님에게 {role.mention}를 {whether}했습니다.",
