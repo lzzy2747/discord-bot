@@ -57,7 +57,7 @@ class General(commands.Cog):
         embed.set_author(name=member.name, icon_url=pfp)
         embed.set_thumbnail(url=pfp)
 
-        embed.add_field(name="ID", value=member.id, inline=False)
+        embed.add_field(name="ID", value=f"``{member.id}``", inline=False)
         embed.add_field(
             name="상태",
             value=f"{status[member.status]}",
@@ -106,7 +106,7 @@ class General(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(name="프사", description="유저의 프사를 보여줍니다.")
+    @app_commands.command(name="아바타", description="유저의 아바타를 보여줍니다.")
     @app_commands.rename(member="맴버")
     @app_commands.describe(member="맴버")
     async def avatar(
@@ -115,12 +115,12 @@ class General(commands.Cog):
         if member is None:
             member = interaction.user
 
-        pfp = member.display_avatar
+        img = member.display_avatar
 
         button = discord.Button(
             label="바로가기",
             style=discord.ButtonStyle.link,
-            url=pfp.url,
+            url=img.url,
             emoji="🔗",
         )
         view = discord.View()
@@ -128,8 +128,8 @@ class General(commands.Cog):
 
         embed = discord.Embed(color=member.color)
 
-        embed.set_author(name=member.name, icon_url=pfp)
-        embed.set_image(url=pfp)
+        embed.set_author(name=member.name, icon_url=img)
+        embed.set_image(url=img)
 
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
