@@ -5,7 +5,6 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from function.disaster import disaster_content, disaster_date
-from function.meme import meme
 from function.naver import shorten_url, translate
 from function.sun import sunrise, sunset
 from inko import Inko
@@ -55,10 +54,10 @@ class Util(commands.Cog):
     async def memes(
         self, interaction: discord.Interaction, category: app_commands.Choice[str]
     ):
-        data = await meme(category=category.value)
+        data = await async_get(url=f"https://api.waifu.pics/sfw/{category.value}", headers=None)
 
         embed = discord.Embed()
-        embed.set_image(url=data)
+        embed.set_image(url=data['url'])
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="한타", description="영타를 한타로 변환합니다.")
@@ -196,7 +195,8 @@ class Util(commands.Cog):
     ):
         data = await translate(query=query, target=target.value, text=query)
         await interaction.response.send_message(f"{data}", ephemeral=False)
-
+    
+    # @app_commands.command()
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Util(bot=bot))
