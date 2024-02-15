@@ -41,6 +41,7 @@ class Mod(commands.Cog):
     @app_commands.describe(member="맴버", duration="기간 (일)", reason="이유")
     @app_commands.rename(member="맴버", duration="기간", reason="이유")
     @app_commands.checks.has_permissions(moderate_members=True)
+    @app_commands.guild_only()
     async def timeout(
         self,
         interaction: discord.Interaction,
@@ -78,6 +79,7 @@ class Mod(commands.Cog):
     @app_commands.checks.has_permissions(kick_members=True)
     @app_commands.describe(member="맴버", reason="이유")
     @app_commands.rename(member="맴버", reason="이유")
+    @app_commands.guild_only()
     async def kick(
         self,
         interaction: discord.Interaction,
@@ -103,6 +105,7 @@ class Mod(commands.Cog):
         ]
     )
     @app_commands.checks.has_permissions(ban_members=True)
+    @app_commands.guild_only()
     @app_commands.describe(member="맴버", reason="이유", duration="기간")
     @app_commands.rename(member="맴버", duration="기간", reason="이유")
     async def ban(
@@ -123,6 +126,7 @@ class Mod(commands.Cog):
         await interaction.response.send_message(f"{member.mention}님을 밴했습니다.")
 
     @app_commands.command(name="역할", description="유저의 역할을 관리합니다.")
+    @app_commands.guild_only()
     @app_commands.choices(
         decision=[
             app_commands.Choice(name="추가", value=1),
