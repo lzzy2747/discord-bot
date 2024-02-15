@@ -24,7 +24,7 @@ class General(commands.Cog):
         t1 = datetime.now() - self.start_time
         t2_sec = t1.total_seconds()
 
-        st_unix = to_unix(self.start_time.timetuple())
+        st_unix = to_unix(self.start_time)
 
         t3 = round(st_unix - t2_sec)
         t3_unix = f"<t:{t3}:R>"
