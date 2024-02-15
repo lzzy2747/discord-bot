@@ -160,6 +160,9 @@ class Util(commands.Cog):
     @app_commands.command(name="출몰시간", description="출몰 시간을 알려줍니다.")
     async def suntime(self, interaction: discord.Interaction):
         embed = discord.Embed()
+
+        await interaction.response.defer()
+        
         embed.add_field(
             name="🌅 일출",
             value=f"{int(sunrise()[:2])}시 {int(sunrise()[2:])}분",
@@ -170,7 +173,8 @@ class Util(commands.Cog):
             value=f"{int(sunset()[:2])}시 {int(sunset()[2:])}분",
             inline=False,
         )
-        await interaction.response.send_message(embed=embed)
+
+        await interaction.followup.send(embed=embed, ephemeral=False)
 
     @app_commands.command(name="번역", description="언어를 번역해줍니다.")
     @app_commands.describe(query="번역할 내용", target="대상 언어")
