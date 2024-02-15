@@ -161,7 +161,7 @@ class Util(commands.Cog):
         embed = discord.Embed()
 
         await interaction.response.defer()
-        
+
         embed.add_field(
             name="🌅 일출",
             value=f"{int(sunrise()[:2])}시 {int(sunrise()[2:])}분",

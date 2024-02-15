@@ -6,6 +6,7 @@ HEADERS = {
 }
 URL: str = "https://www.melon.com/chart/index.htm"
 
+
 def chart():
     request = get(URL, headers=HEADERS).text
     soup = BeautifulSoup(request, "html.parser")
