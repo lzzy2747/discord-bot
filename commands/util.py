@@ -1,15 +1,18 @@
+from dis import disco
 from os import getenv
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
-from function.disaster import disaster_content, disaster_date
-from function.naver import shorten_url, translate
-from function.sun import sunrise, sunset
 from inko import Inko
 from simpcalc.errors import *
 from simpcalc.simpcalc import Calculate
+
+from function.chart import get_artist, get_title
+from function.disaster import disaster_content, disaster_date
+from function.naver import shorten_url, translate
+from function.sun import sunrise, sunset
 from utils.https import *
 
 load_dotenv(dotenv_path=".env")
@@ -51,13 +54,15 @@ class Util(commands.Cog):
     )
     @app_commands.describe(category="목록")
     @app_commands.rename(category="목록")
-    async def memes(
+    async def meme(
         self, interaction: discord.Interaction, category: app_commands.Choice[str]
     ):
-        data = await async_get(url=f"https://api.waifu.pics/sfw/{category.value}", headers=None)
+        data = await async_get(
+            url=f"https://api.waifu.pics/sfw/{category.value}", headers=None
+        )
 
         embed = discord.Embed()
-        embed.set_image(url=data['url'])
+        embed.set_image(url=data["url"])
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="한타", description="영타를 한타로 변환합니다.")
@@ -195,8 +200,19 @@ class Util(commands.Cog):
     ):
         data = await translate(query=query, target=target.value, text=query)
         await interaction.response.send_message(f"{data}", ephemeral=False)
-    
-    # @app_commands.command()
+
+    @app_commands.command(name="멜론", description="멜론 차트를 가져옵니다.")
+    async def melon(self, interaction: discord.Interaction):
+        t: list = get_title()
+        a: list = get_artist()
+
+        embed = discord.Embed(title="멜론 차트", color=discord.Color.green())
+
+        for i in range(10):
+            embed.add_field(name=f"{i+1}위", value=f"{t[i]} - {a[i]}", inline=False)
+
+        await interaction.response.send_message(embed=embed, ephemeral=False)
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Util(bot=bot))

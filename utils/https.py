@@ -4,7 +4,7 @@ from aiohttp import ClientSession
 from requests import get
 
 
-def get_request(url: str, params: Optional[dict]):
+def get_request(url: str, params: Optional[dict | None]):
     response = get(url=url, params=params)
 
     if response.status_code == 200:
