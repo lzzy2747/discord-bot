@@ -9,7 +9,7 @@ from inko import Inko
 from simpcalc.errors import *
 from simpcalc.simpcalc import Calculate
 
-from function.chart import get_artist, get_title
+from function.chart import IMG, get_artist, get_title
 from function.disaster import disaster_content, disaster_date
 from function.naver import shorten_url, translate
 from function.sun import sunrise, sunset
@@ -207,6 +207,7 @@ class Util(commands.Cog):
         a: list = get_artist()
 
         embed = discord.Embed(title="멜론 차트", color=discord.Color.green())
+        embed.set_thumbnail(url=IMG)
 
         for i in range(10):
             embed.add_field(name=f"{i+1}위", value=f"{t[i]} - {a[i]}", inline=False)
