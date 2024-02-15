@@ -9,6 +9,7 @@ from utils.unix import to_unix
 class General(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.start_time = datetime.now()
 
     @app_commands.command(name="핑", description="봇의 응답속도를 표시합니다.")
     async def ping(self, interaction: discord.Interaction):
