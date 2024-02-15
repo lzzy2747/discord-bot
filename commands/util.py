@@ -1,4 +1,3 @@
-from dis import disco
 from os import getenv
 
 import discord
