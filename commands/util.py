@@ -8,8 +8,8 @@ from inko import Inko
 from simpcalc.errors import *
 from simpcalc.simpcalc import Calculate
 
-from function.chart import get_artist, get_title
 from function.disaster import disaster_content, disaster_date
+from function.melon import get_artist, get_title
 from function.naver import shorten_url, translate
 from function.sun import sunrise, sunset
 from utils.https import *

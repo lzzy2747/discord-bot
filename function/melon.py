@@ -7,7 +7,7 @@ HEADERS = {
 URL: str = "https://www.melon.com/chart/index.htm"
 
 
-def chart():
+def get_chart():
     request = get(URL, headers=HEADERS).text
     soup = BeautifulSoup(request, "html.parser")
 
@@ -16,7 +16,7 @@ def chart():
 
 def get_title() -> list:
     title_list: list = []
-    title = chart().find_all("div", {"class": "ellipsis rank01"})
+    title = get_chart().find_all("div", {"class": "ellipsis rank01"})
 
     for i in title:
         title_list.append(i.find("a").text)
@@ -26,7 +26,7 @@ def get_title() -> list:
 
 def get_artist() -> list:
     artist_list: list = []
-    artist = chart().find_all("div", {"class": "ellipsis rank02"})
+    artist = get_chart().find_all("div", {"class": "ellipsis rank02"})
 
     for j in artist:
         artist_list.append(j.find("span", {"class": "checkEllipsis"}).text)
