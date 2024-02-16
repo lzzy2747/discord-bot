@@ -8,6 +8,7 @@ from embeds.error import error_embed
 from embeds.extra.hangang import hangang_embed
 from function.dictionary import dictionary
 from function.hangang import hangang
+from function.melon import singer, title
 from function.translate import tse
 
 
@@ -107,6 +108,25 @@ class Util(commands.Cog):
                 embed=await error_embed(description="올바르지 않은 수식입니다."),
                 ephemeral=True,
             )
+
+    @app_commands.command(name="멜론", description="멜론 차트를 불러옵니다.")
+    async def melon_chart(self, interaction: discord.Interaction):
+        t = title()
+        s = singer()
+
+        embed = discord.Embed(color=discord.Color.green())
+        embed.set_thumbnail(
+            url="https://is1-ssl.mzstatic.com/image/thumb/Purple116/v4/e4/7f/26/e47f262f-5235-b07a-db72-1d115e1b1d22/AppIcon-1x_U007emarketing-5-0-85-220.png/512x512bb.jpg"
+        )
+
+        for r in range(10):
+            embed.add_field(name=f"{r+1}위", value=f"{t[r]} - {s[r]}", inline=False)
+
+        await interaction.response.defer(thinking=True, ephemeral=True)
+        await interaction.followup.send(
+            embed=embed,
+            ephemeral=True,
+        )
 
 
 async def setup(bot: commands.Bot):

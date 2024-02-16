@@ -1,10 +1,11 @@
+from datetime import timedelta
+
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 from embeds.error import error_embed
 from embeds.success import success_embed
-from datetime import timedelta
 
 
 class Mod(commands.Cog):
@@ -142,7 +143,9 @@ class Mod(commands.Cog):
     @app_commands.rename(member="맴버", duration="기간")
     @app_commands.describe(member="타임아웃할 맴버", duration="타임아웃하는 사유")
     @app_commands.checks.has_permissions(moderate_members=True)
-    async def timeout(self, interaction: discord.Interaction, member: discord.Member, duration: str):
+    async def timeout(
+        self, interaction: discord.Interaction, member: discord.Member, duration: str
+    ):
         if member.id == interaction.user.id:
             await interaction.response.defer(thinking=True, ephemeral=True)
             return await interaction.followup.send(
@@ -153,7 +156,9 @@ class Mod(commands.Cog):
         if duration == 0:
             await interaction.response.defer(thinking=True, ephemeral=True)
             return await interaction.followup.send(
-                embed=await error_embed(description=f"{member.mention}님의 타임아웃을 해제했습니다."),
+                embed=await error_embed(
+                    description=f"{member.mention}님의 타임아웃을 해제했습니다."
+                ),
                 ephemeral=True,
             )
 
