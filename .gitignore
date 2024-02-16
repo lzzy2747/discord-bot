@@ -1,6 +1,6 @@
-venv/
-__pycache__/
-.idea/
 .env
-deploy.bat
-run.bat
+venv/
+.vscode/
+.idea/
+*.bat
+__pycache__/

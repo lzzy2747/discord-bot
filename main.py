@@ -1,4 +1,4 @@
-from os import getenv, listdir
+import os
 
 import discord
 from discord.ext import commands
@@ -18,19 +18,19 @@ class Main(commands.AutoShardedBot):
 
         load_dotenv()
 
+    async def setup_hook(self) -> None:
+        for filename in os.listdir("./cogs"):
+            if filename.endswith(".py") and not filename.startswith("__"):
+                await self.load_extension(f"cogs.{filename[:-3]}")
+
     async def on_ready(self):
+        print(f"Logged as in {self.user.name}")
+
         synced = await self.tree.sync()
         print(f"Synced {len(synced)} commands")
 
-        print(f"Logged as in {self.user.id}")
-
-    async def setup_hook(self):
-        for filename in listdir("./commands"):
-            if filename.endswith(".py") and not filename.startswith("__"):
-                await self.load_extension(f"commands.{filename[:-3]}")
-
     def run(self):
-        return super().run(token=getenv(key="BOT_TOKEN"), reconnect=True)
+        return super().run(token=os.getenv("TOKEN"), reconnect=True)
 
 
 bot = Main()
