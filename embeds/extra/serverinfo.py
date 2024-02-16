@@ -1,13 +1,13 @@
-from time import mktime
-
 import discord
+
+from tool.unix import *
 
 
 async def serverinfo(interaction: discord.Interaction, guild: discord.Guild):
     member = interaction.user
     avatar = member.display_avatar
 
-    created_at = f"<t:{round(mktime(guild.created_at.timetuple()))}> (<t:{round(mktime(guild.created_at.timetuple()))}:R>)"
+    created_at = f"<t:{to_unix(guild.created_at)}> (<t:{to_unix(guild.created_at)}:R>)"
 
     embed = discord.Embed()
     embed.set_author(name=guild.name)

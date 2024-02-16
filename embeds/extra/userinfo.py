@@ -1,12 +1,14 @@
-from time import mktime
-
 import discord
+
+from tool.unix import *
 
 
 async def userinfo(member: discord.Member):
     avatar = member.display_avatar
-    created_at = f"<t:{round(mktime(member.created_at.timetuple()))}> (<t:{round(mktime(member.created_at.timetuple()))}:R>)"
-    joined_at = f"<t:{round(mktime(member.joined_at.timetuple()))}> (<t:{round(mktime(member.joined_at.timetuple()))}:R>)"
+    created_at = (
+        f"<t:{to_unix(member.created_at)}> (<t:{to_unix(member.created_at)}:R>)"
+    )
+    joined_at = f"<t:{to_unix(member.joined_at)}> (<t:{to_unix(member.joined_at)}:R>)"
 
     status: dict = {
         discord.Status.online: "온라인",
