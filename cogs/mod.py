@@ -4,6 +4,7 @@ from discord.ext import commands
 
 from embeds.error import error_embed
 from embeds.success import success_embed
+from datetime import timedelta
 
 
 class Mod(commands.Cog):
@@ -137,7 +138,33 @@ class Mod(commands.Cog):
             ephemeral=False,
         )
 
-    # TODO add timeout command
+    @app_commands.command(name="타임아웃", description="유저를 타임아웃합니다.")
+    @app_commands.rename(member="맴버", duration="기간")
+    @app_commands.describe(member="타임아웃할 맴버", duration="타임아웃하는 사유")
+    @app_commands.checks.has_permissions(moderate_members=True)
+    async def timeout(self, interaction: discord.Interaction, member: discord.Member, duration: str):
+        if member.id == interaction.user.id:
+            await interaction.response.defer(thinking=True, ephemeral=True)
+            return await interaction.followup.send(
+                embed=await error_embed(description="본인을 타임아웃할 수 없습니다."),
+                ephemeral=True,
+            )
+
+        if duration == 0:
+            await interaction.response.defer(thinking=True, ephemeral=True)
+            return await interaction.followup.send(
+                embed=await error_embed(description=f"{member.mention}님의 타임아웃을 해제했습니다."),
+                ephemeral=True,
+            )
+
+        await interaction.response.defer(thinking=True, ephemeral=False)
+        await member.timeout(until=timedelta(days=duration))
+        await interaction.followup.send(
+            embed=await success_embed(
+                description=f"{member.mention}님의 타임아웃을 적용했습니다."
+            ),
+            ephemeral=False,
+        )
 
 
 async def setup(bot: commands.Bot):
