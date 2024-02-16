@@ -125,7 +125,7 @@ class Util(commands.Cog):
         await interaction.response.defer(thinking=True, ephemeral=True)
         await interaction.followup.send(
             embed=embed,
-            ephemeral=True,
+            ephemeral=False,
         )
 
 
