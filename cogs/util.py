@@ -9,7 +9,7 @@ from embeds.extra.hangang import hangang_embed
 from function.dictionary import dictionary
 from function.disaster import disaster as ds
 from function.hangang import hangang
-from function.melon import singer, title
+from function.melon import img, singer, title
 from function.translate import tse
 
 
@@ -116,9 +116,7 @@ class Util(commands.Cog):
         s = singer()
 
         embed = discord.Embed(color=discord.Color.green())
-        embed.set_thumbnail(
-            url="https://is1-ssl.mzstatic.com/image/thumb/Purple116/v4/e4/7f/26/e47f262f-5235-b07a-db72-1d115e1b1d22/AppIcon-1x_U007emarketing-5-0-85-220.png/512x512bb.jpg"
-        )
+        embed.set_thumbnail(url=img)
 
         for r in range(10):
             embed.add_field(name=f"{r+1}위", value=f"{t[r]} - {s[r]}", inline=False)
@@ -150,6 +148,8 @@ class Util(commands.Cog):
             embed=embed,
             ephemeral=False,
         )
+
+    # @app_commands.command(name="", description="")
 
 
 async def setup(bot: commands.Bot):
