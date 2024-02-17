@@ -7,6 +7,7 @@ from simpcalc.simpcalc import Calculate
 from embeds.error import error_embed
 from embeds.extra.hangang import hangang_embed
 from function.dictionary import dictionary
+from function.disaster import disaster as ds
 from function.hangang import hangang
 from function.melon import singer, title
 from function.translate import tse
@@ -121,6 +122,28 @@ class Util(commands.Cog):
 
         for r in range(10):
             embed.add_field(name=f"{r+1}위", value=f"{t[r]} - {s[r]}", inline=False)
+
+        await interaction.response.defer(thinking=True, ephemeral=True)
+        await interaction.followup.send(
+            embed=embed,
+            ephemeral=False,
+        )
+
+    @app_commands.command(
+        name="재난문자", description="최근 발송된 재난문자를 보여줍니다."
+    )
+    async def disaster(self, interaction: discord.Interaction):
+        d = ds()
+
+        embed = discord.Embed()
+
+        for i in range(len(d)):
+            loc = d[i]["location_name"]
+            date = d[i]["create_date"]
+            msg = d[i]["msg"]
+
+            embed.add_field(name=loc, value=msg, inline=False)
+            embed.set_footer(text=date)
 
         await interaction.response.defer(thinking=True, ephemeral=True)
         await interaction.followup.send(
