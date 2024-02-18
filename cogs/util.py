@@ -9,7 +9,7 @@ from embeds.extra.hangang import hangang_embed
 from function.dictionary import dictionary
 from function.disaster import disaster as ds
 from function.hangang import hangang
-from function.melon import img, singer, title
+from function.melon import IMG, singer, title
 from function.translate import tse
 
 
@@ -116,7 +116,7 @@ class Util(commands.Cog):
         s = singer()
 
         embed = discord.Embed(color=discord.Color.green())
-        embed.set_thumbnail(url=img)
+        embed.set_thumbnail(url=IMG)
 
         for r in range(10):
             embed.add_field(name=f"{r+1}위", value=f"{t[r]} - {s[r]}", inline=False)
