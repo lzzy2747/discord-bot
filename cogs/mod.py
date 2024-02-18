@@ -193,7 +193,10 @@ class Mod(commands.Cog):
         *,
         role: discord.Role,
     ):
-        if "@everyone" or "@here" in role.name:
+        if member is None:
+            member = interaction.user
+
+        if role.name == "@everyone" or role.name == "@here":
             await interaction.response.defer(thinking=True, ephemeral=True)
             return await interaction.followup.send(
                 embed=await error_embed(
