@@ -138,11 +138,19 @@ class Mod(commands.Cog):
         )
 
     @app_commands.command(name="타임아웃", description="유저를 타임아웃합니다.")
-    @app_commands.rename(member="맴버", duration="기간")
-    @app_commands.describe(member="타임아웃할 맴버", duration="타임아웃하는 사유")
+    @app_commands.rename(member="맴버", duration="기간", reason="사유")
+    @app_commands.describe(
+        member="타임아웃할 맴버",
+        duration="타임아웃하는 기간",
+        reason="타임아웃하는 사유",
+    )
     @app_commands.checks.has_permissions(moderate_members=True)
     async def timeout(
-        self, interaction: discord.Interaction, member: discord.Member, duration: str
+        self,
+        interaction: discord.Interaction,
+        member: discord.Member,
+        duration: str,
+        reason: str = None,
     ):
         if member.id == interaction.user.id:
             await interaction.response.defer(thinking=True, ephemeral=True)
@@ -161,7 +169,7 @@ class Mod(commands.Cog):
             )
 
         await interaction.response.defer(thinking=True, ephemeral=False)
-        await member.timeout(until=timedelta(days=duration))
+        await member.timeout(until=timedelta(days=duration), reason=reason)
         await interaction.followup.send(
             embed=await success_embed(
                 description=f"{member.mention}님의 타임아웃을 적용했습니다."
