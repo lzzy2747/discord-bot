@@ -1,4 +1,7 @@
+from typing import Final
+
 import discord
+from billboard import ChartData as cd
 from discord import app_commands
 from discord.ext import commands
 from simpcalc.errors import *
@@ -144,6 +147,30 @@ class Util(commands.Cog):
             embed.set_footer(text=date)
 
         await interaction.response.defer(thinking=True, ephemeral=True)
+        await interaction.followup.send(
+            embed=embed,
+            ephemeral=False,
+        )
+
+    @app_commands.command(name="빌보드", description="빌보드를 차트를 불러옵니다.")
+    async def bill_board(self, interaction: discord.Interaction):
+        c = cd(name="hot-100")
+        IMG: Final[str] = (
+            "https://www.billboard.com/wp-content/themes/vip/pmc-billboard-2021/assets/app/icons/icon-512x512.png"
+        )
+
+        embed = discord.Embed()
+        embed.set_thumbnail(url=IMG)
+
+        for i in range(10):
+            s = c[i]
+
+            t = s.title
+            a = s.artist
+
+            embed.add_field(name=f"{i+1}위", value=f"{t} - {a}", inline=False)
+
+        await interaction.response.defer(thinking=True, ephemeral=False)
         await interaction.followup.send(
             embed=embed,
             ephemeral=False,
