@@ -1,6 +1,9 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
+from simpcalc.errors import *
+from simpcalc.simpcalc import Calculate
+
 from embeds.error import error_embed
 from embeds.extra.hangang import hangang_embed
 from function.dictionary import dictionary
@@ -8,8 +11,6 @@ from function.disaster import disaster as ds
 from function.hangang import hangang
 from function.melon import img, singer, title
 from function.translate import tse
-from simpcalc.errors import *
-from simpcalc.simpcalc import Calculate
 
 
 class Util(commands.Cog):
@@ -147,8 +148,6 @@ class Util(commands.Cog):
             embed=embed,
             ephemeral=False,
         )
-
-    # @app_commands.command(name="", description="")
 
 
 async def setup(bot: commands.Bot):

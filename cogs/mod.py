@@ -3,6 +3,7 @@ from datetime import timedelta
 import discord
 from discord import app_commands
 from discord.ext import commands
+
 from embeds.error import error_embed
 from embeds.success import success_embed
 
@@ -169,6 +170,56 @@ class Mod(commands.Cog):
             ),
             ephemeral=False,
         )
+
+    @app_commands.command(
+        name="역할", description="유저의 역할을 추가하거나 제거합니다."
+    )
+    @app_commands.checks.has_permissions(manage_roles=True)
+    @app_commands.choices(
+        choose=[
+            app_commands.Choice(name="추가", value=1),
+            app_commands.Choice(name="제거", value=2),
+        ]
+    )
+    @app_commands.rename(member="맴버", role="역할", choose="여부")
+    @app_commands.describe(
+        member="맴버", role="역할", choose="추가할 지 제거할 지 여부"
+    )
+    async def roles(
+        self,
+        interaction: discord.Interaction,
+        choose: app_commands.Choice[int],
+        member: discord.Member = None,
+        *,
+        role: discord.Role,
+    ):
+        if "@everyone" or "@here" in role.name:
+            await interaction.response.defer(thinking=True, ephemeral=True)
+            return await interaction.followup.send(
+                embed=await error_embed(
+                    description=f"{choose.name}할 수 없는 역할입니다."
+                ),
+                ephemeral=True,
+            )
+
+        if choose.value == 1:
+            await interaction.response.defer(thinking=True, ephemeral=False)
+            await member.add_roles(role)
+            await interaction.followup.send(
+                embed=await success_embed(
+                    description=f"{member.mention}님에게 {role.mention}를 {choose.name}했습니다."
+                ),
+                ephemeral=False,
+            )
+        else:
+            await interaction.response.defer(thinking=True, ephemeral=False)
+            await member.remove_roles(role)
+            await interaction.followup.send(
+                embed=await success_embed(
+                    description=f"{member.mention}님에게서 {role.mention}를 {choose.name}했습니다."
+                ),
+                ephemeral=False,
+            )
 
 
 async def setup(bot: commands.Bot):

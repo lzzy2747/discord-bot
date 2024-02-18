@@ -2,6 +2,7 @@ import os
 from typing import Final
 
 from dotenv import load_dotenv
+
 from tool.api import *
 
 load_dotenv(dotenv_path="../.env")
