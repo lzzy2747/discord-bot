@@ -15,16 +15,14 @@ class Mod(commands.Cog):
     async def cog_app_command_error(
         self, interaction: discord.Interaction, error: app_commands.AppCommandError
     ) -> None:
-        if isinstance(error, commands.MissingPermissions) or isinstance(
-            error, commands.BotMissingPermissions
+        if isinstance(error, app_commands.MissingPermissions) or isinstance(
+            error, app_commands.BotMissingPermissions
         ):
             await interaction.response.defer(thinking=True, ephemeral=True)
-            await interaction.followup.send(
+            return await interaction.followup.send(
                 embed=await error_embed(description="권한이 부족합니다."),
                 ephemeral=True,
             )
-
-        raise error
 
     @app_commands.command(name="청소", description="메시지를 청소합니다.")
     @app_commands.checks.has_permissions(manage_messages=True)
